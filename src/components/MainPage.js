@@ -17,7 +17,7 @@ const MainPage = () => {
   };
   const services = [
     {
-      title: "Fireewatch",
+      title: "Firewatch",
       description: "Comprehensive fire monitoring and prevention services to keep your property safe.",
       path: "/services/firewatch",
       icon: <svg
