@@ -1,6 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import GoogleReviews from './GoogleReviews';
 import ServiceCard from './ServiceCard';
 import ContactForm from './ContactForm';
+import FloatingReviews from './FloatingReviews';
+import ImpactFlowChart from './ImpactFlowChart';
+import MissionStats from './MissionStats';
 
 const MainPage = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -9,6 +13,7 @@ const MainPage = () => {
   const servicesRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef(null);
+  const reviewsRef = useRef(null);
   const missionRef = useRef(null);
 
   const scrollToSection = (ref, tabName) => {
@@ -132,6 +137,24 @@ const MainPage = () => {
     }
   ];
 
+  // Scroll reveal effect for sections
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('reveal-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation Banner */}
@@ -193,6 +216,14 @@ const MainPage = () => {
                 Services
               </button>
               <button 
+                onClick={() => scrollToSection(reviewsRef, 'reviews')}
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  activeTab === 'reviews' ? 'text-blue-500' : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                Reviews
+              </button>
+              <button 
                 onClick={() => scrollToSection(aboutRef, 'about')}
                 className={`text-sm font-medium transition-colors duration-200 ${
                   activeTab === 'about' ? 'text-blue-500' : 'text-gray-300 hover:text-white'
@@ -243,6 +274,15 @@ const MainPage = () => {
                 </button>
                 <button
                   onClick={() => {
+                    scrollToSection(reviewsRef, 'reviews');
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md"
+                >
+                  Reviews
+                </button>
+                <button
+                  onClick={() => {
                     scrollToSection(aboutRef, 'about');
                     setIsMenuOpen(false);
                   }}
@@ -275,49 +315,55 @@ const MainPage = () => {
       </nav>
 
       <div className="pt-16">
-        {/* Hero Section */}
-        <section ref={homeRef} className="relative w-full h-screen flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-black"></div>
-          <div className="container mx-auto text-center relative z-10 px-4 max-w-4xl">
-            <img 
-              src="/logo.PNG" 
-              alt="Security Shield Logo" 
-              className="mx-auto mb--4 w-44 md:w-80 lg:w-96"
+        {/* Hero Section (restored simpler version) */}
+        <section ref={homeRef} className="relative w-full h-screen flex items-center justify-center text-center px-6">
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-black" />
+          <div className="relative z-10 max-w-4xl mx-auto">
+            <img
+              src="/logo.PNG"
+              alt="SecureAI Logo"
+              className="mx-auto mb-6 w-44 md:w-72 lg:w-80"
             />
-            <h1 className="text-6xl font-bold mb-4 tracking-tight">
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">
               SECUREAI
             </h1>
-            <p className="text-xl mb-8 text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg md:text-2xl mb-10 text-gray-300 max-w-2xl mx-auto leading-relaxed">
               Intelligent protection for what matters most, designed with you in mind!
             </p>
-            <div className="flex justify-center space-x-6">
-              <button 
-                onClick={() => scrollToSection(servicesRef, 'services')} 
+            <div className="flex flex-wrap justify-center gap-6">
+              <button
+                onClick={() => scrollToSection(servicesRef, 'services')}
                 className="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50"
               >
                 Get Started
               </button>
-              <button 
-                onClick={() => scrollToSection(contactRef, 'contact')} 
+              <button
+                onClick={() => scrollToSection(contactRef, 'contact')}
                 className="bg-transparent hover:bg-blue-600/10 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 border-2 border-blue-600 hover:border-blue-500"
               >
                 Contact Us
+              </button>
+              <button
+                onClick={() => scrollToSection(reviewsRef, 'reviews')}
+                className="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50 glow-border animate-hero-pulse"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <svg className="w-5 h-5 text-yellow-300 animate-star-glow" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 01.894.553l1.382 2.8 3.09.45a1 1 0 01.554 1.707l-2.236 2.18.528 3.08a1 1 0 01-1.45 1.054L10 12.347l-2.768 1.457a1 1 0 01-1.45-1.054l.528-3.08-2.236-2.18a1 1 0 01.554-1.707l3.09-.45L9.106 2.553A1 1 0 0110 2z" /></svg>
+                  Our Reviews
+                </span>
               </button>
             </div>
           </div>
         </section>
 
-        {/* Problem & Solution Section */}
-        <section className="py-24 bg-gradient-to-b from-black via-gray-900 to-black">
+        {/* Original Critical Gap in Traditional Security Section (restored) */}
+        <section className="py-24 bg-gradient-to-b from-black via-gray-900 to-black reveal" id="critical-gap">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              {/* Problem Statement */}
               <div className="text-center mb-16">
                 <h2 className="text-4xl font-bold mb-6 text-red-500">The Critical Gap in Traditional Security</h2>
                 <p className="text-xl text-gray-300 mb-8">Most security companies operate in the dark, leaving you exposed to unnecessary risks.</p>
               </div>
-
-              {/* Problem Details */}
               <div className="grid md:grid-cols-2 gap-12 mb-20">
                 <div className="bg-gray-800/50 p-8 rounded-xl backdrop-blur">
                   <h3 className="text-2xl font-semibold mb-4 text-white">The Real Problem</h3>
@@ -342,7 +388,6 @@ const MainPage = () => {
                     </li>
                   </ul>
                 </div>
-
                 <div className="bg-blue-900/50 p-8 rounded-xl backdrop-blur">
                   <h3 className="text-2xl font-semibold mb-4 text-white">The SecureAI Solution</h3>
                   <ul className="space-y-4">
@@ -376,13 +421,9 @@ const MainPage = () => {
                   </ul>
                 </div>
               </div>
-
-              {/* Call to Action */}
               <div className="text-center">
-                <p className="text-2xl font-semibold text-white mb-8">
-                  Because security without accountability isn't security at all.
-                </p>
-                <button 
+                <p className="text-2xl font-semibold text-white mb-8">Because security without accountability isn't security at all.</p>
+                <button
                   onClick={() => scrollToSection(contactRef, 'contact')}
                   className="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50"
                 >
@@ -393,8 +434,11 @@ const MainPage = () => {
           </div>
         </section>
 
+        {/* Impact Growth Flow Chart */}
+        <ImpactFlowChart />
+
         {/* Services Section */}
-        <section ref={servicesRef} className="py-24 bg-black">
+        <section ref={servicesRef} className="py-24 bg-black reveal">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-semibold text-center mb-16">Our Services</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -406,7 +450,7 @@ const MainPage = () => {
         </section>
 
         {/* About Us Section */}
-        <section ref={aboutRef} className="py-24 bg-gray-900">
+  <section ref={aboutRef} className="py-24 bg-gray-900 reveal">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-semibold text-center mb-16">About Us</h2>
             <div className="max-w-4xl mx-auto">
@@ -495,34 +539,109 @@ const MainPage = () => {
           </div>
         </section>
 
+        {/* Reviews Section */}
+        <div ref={reviewsRef} className="reveal">
+          <GoogleReviews />
+        </div>
+
         {/* Contact Us Section */}
-        <section ref={contactRef} id="contact" className="py-24 bg-black">
+  <section ref={contactRef} id="contact" className="py-24 bg-black reveal">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-semibold text-center mb-16">Contact Us</h2>
-            <div className="max-w-lg mx-auto">
-              <ContactForm />
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+              <div className="space-y-6">
+                <div className="bg-gray-800/60 p-6 rounded-xl border border-gray-700">
+                  <h3 className="text-xl font-semibold mb-2">Fast Contact</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed">Share a few details and our team will respond promptly—usually within the same business day.</p>
+                  <div className="mt-4 text-sm space-y-3">
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243" /></svg>
+                      <p className="text-gray-400">Address:<br /><span className="text-white">3031 Tisch Way, San Jose, CA 95128, United States</span></p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 8h18" /></svg>
+                      <p className="text-gray-400">For general inquiries use the form. For urgent matters, start your message with "URGENT".</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.343-3 3v7h6v-7c0-1.657-1.343-3-3-3z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 21h14" /></svg>
+                      <p className="text-gray-400">All messages are monitored securely—your information is confidential.</p>
+                    </div>
+                  </div>
+                  <a href="#reviews" className="inline-block mt-6 text-blue-400 hover:text-blue-300 text-sm underline decoration-blue-600/40">See client feedback →</a>
+                </div>
+                <div className="bg-blue-900/40 p-6 rounded-xl border border-blue-800">
+                  <h3 className="text-lg font-semibold mb-2">Why choose SecureAI?</h3>
+                  <ul className="text-sm text-gray-300 space-y-2">
+                    <li className="flex items-start gap-2"><span className="text-blue-400">•</span> Real-time accountability</li>
+                    <li className="flex items-start gap-2"><span className="text-blue-400">•</span> Faster incident prevention</li>
+                    <li className="flex items-start gap-2"><span className="text-blue-400">•</span> Transparent reporting</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="max-w-lg mx-auto w-full">
+                <ContactForm />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Mission Section - Moved to end */}
-        <section ref={missionRef} className="py-24 bg-gray-900">
+        {/* Mission Section - Enhanced */}
+        <section ref={missionRef} className="py-28 bg-gradient-to-b from-gray-900 via-black to-gray-900 reveal">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-semibold text-center mb-16">Our Mission</h2>
-            <div className="max-w-4xl mx-auto text-center">
-              <p className="text-gray-300 text-lg leading-relaxed mb-8">
-                At SecureAI, we are revolutionizing private security by integrating cutting-edge AI technology with professional, in-person security services. Our mission is to provide businesses, communities, and individuals with the highest level of safety, reliability, and transparency.
-              </p>
-              <p className="text-gray-300 text-lg leading-relaxed mb-8">
-                Through our AI-powered solutions, we enhance accountability, optimize response times, and ensure real-time monitoring, giving our clients complete peace of mind. We believe that security should be proactive, not reactive, and that technology should empower, not replace, human expertise.
-              </p>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                At SecureAI, we don't just provide security—we redefine it. Our commitment to innovation, excellence, and customer service drives us to continuously improve and adapt our solutions to meet the evolving security challenges of today's world.
-              </p>
+            <div className="text-center mb-10">
+              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Our Mission</h2>
+              <p className="text-gray-300 max-w-3xl mx-auto text-lg leading-relaxed">Elevating private security by fusing professional on-site presence with intelligent, adaptive technology—bringing accountability, foresight, and speed together.</p>
+            </div>
+            <MissionStats />
+            <div className="grid md:grid-cols-5 gap-6 mb-16">
+              {[
+                { title: 'Accountability', desc: 'Verified guard actions & location integrity.', icon: 'M5 13l4 4L19 7' },
+                { title: 'Intelligence', desc: 'Data-driven patterns & predictive insights.', icon: 'M12 8v4l3 3' },
+                { title: 'Speed', desc: 'Instant alerts & rapid escalation pipeline.', icon: 'M3 13h18' },
+                { title: 'Transparency', desc: 'Immutable event trail & live reporting.', icon: 'M5 17h14' },
+                { title: 'Reliability', desc: 'Layered tech + trained personnel synergy.', icon: 'M9 7h1m4 0h1' }
+              ].map(p => (
+                <div key={p.title} className="bg-gray-800/60 backdrop-blur rounded-2xl p-6 border border-gray-700/50 flex flex-col gap-3 hover:border-blue-600/50 transition">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={p.icon} /></svg>
+                    <h3 className="text-lg font-semibold">{p.title}</h3>
+                  </div>
+                  <p className="text-gray-300 text-sm leading-relaxed">{p.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div className="grid md:grid-cols-3 gap-10 mb-20">
+              <div className="bg-blue-900/30 rounded-2xl border border-blue-700/50 p-8 flex flex-col gap-4">
+                <h3 className="text-xl font-semibold">Why It Matters</h3>
+                <p className="text-gray-300 text-sm leading-relaxed">Reactive security is costly. A proactive, instrumented layer reduces loss, liability, and downtime while increasing trust and retention.</p>
+              </div>
+              <div className="bg-purple-900/30 rounded-2xl border border-purple-700/50 p-8 flex flex-col gap-4">
+                <h3 className="text-xl font-semibold">How It Scales</h3>
+                <p className="text-gray-300 text-sm leading-relaxed">Insights compound across properties—pattern detection improves systemic coverage and informs staffing & patrol strategy.</p>
+              </div>
+              <div className="bg-pink-900/30 rounded-2xl border border-pink-700/50 p-8 flex flex-col gap-4">
+                <h3 className="text-xl font-semibold">Human + AI</h3>
+                <p className="text-gray-300 text-sm leading-relaxed">We enhance teams—not replace them—augmenting judgment with telemetry, context, and automated escalation.</p>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-xl text-gray-200 font-medium mb-6">Security shouldn’t be a black box—it should be a source of live truth.</p>
+              <button onClick={() => scrollToSection(contactRef, 'contact')} className="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50">
+                Start a SecureAI Assessment
+              </button>
             </div>
           </div>
         </section>
       </div>
+      {/* Floating Contact Button */}
+      <a
+        href="#contact"
+        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-full shadow-lg text-sm font-medium transition transform hover:scale-105"
+        aria-label="Quick contact shortcut"
+      >
+        Contact Us
+      </a>
+      <FloatingReviews />
     </div>
   );
 };
