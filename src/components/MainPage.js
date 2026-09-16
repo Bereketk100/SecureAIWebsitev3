@@ -118,7 +118,7 @@ const leadership = [
   {
     name: 'Dagmawi Bekele',
     role: 'Founder & Chief Executive Officer',
-    photo: '/dagmawi-bekele.jpg',
+    initials: 'DB',
     bio:
       'Dagmawi has spent more than a decade in the private security industry, including corporate experience at Allied Universal, where he worked across staffing, operations and client accounts at national scale. He founded SecureAI to bring that operational discipline to property owners who were tired of guards who could not be accounted for, and he still personally reviews the accounts the company takes on.',
     credentials: ['10+ years in private security', 'Allied Universal corporate background'],
@@ -419,47 +419,12 @@ const MainPage = () => {
               </p>
             </div>
 
-            {/* Founder */}
-            <div className="mt-14 bg-white shadow-card border-t-4 border-brand-600">
-              <div className="grid md:grid-cols-[320px_1fr]">
-                <div className="relative bg-navy-900">
-                  <img
-                    src={leadership[0].photo}
-                    alt={`${leadership[0].name}, ${leadership[0].role} of SecureAI`}
-                    className="w-full h-full min-h-[340px] object-cover object-top"
-                  />
-                </div>
-                <div className="p-9 lg:p-12">
-                  <p className="eyebrow text-brand-600">Founder</p>
-                  <h3 className="mt-5 font-display font-extrabold text-2xl md:text-3xl tracking-tight text-navy-800">
-                    {leadership[0].name}
-                  </h3>
-                  <p className="mt-2 font-display font-semibold text-sm uppercase tracking-wider text-slateink-500">
-                    {leadership[0].role}
-                  </p>
-                  <p className="mt-6 text-base leading-relaxed text-slateink">
-                    {leadership[0].bio}
-                  </p>
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    {leadership[0].credentials.map(c => (
-                      <span
-                        key={c}
-                        className="bg-mist-200 text-navy-800 font-display font-semibold text-[11px] uppercase tracking-wider px-4 py-2"
-                      >
-                        {c}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Supporting leadership */}
-            <div className="mt-8 grid md:grid-cols-2 gap-8">
-              {leadership.slice(1).map(person => (
+            {/* Leadership */}
+            <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {leadership.map(person => (
                 <div
                   key={person.name}
-                  className="bg-white shadow-card p-9 flex flex-col lift hover:shadow-lift"
+                  className="bg-white shadow-card border-t-4 border-brand-600 p-9 flex flex-col lift hover:shadow-lift"
                 >
                   <div className="flex items-start gap-5">
                     <div className="w-16 h-16 shrink-0 bg-navy-800 text-white font-display font-bold text-lg flex items-center justify-center">
@@ -492,15 +457,30 @@ const MainPage = () => {
                   <p className="mt-6 text-sm leading-relaxed text-slateink flex-grow">
                     {person.bio}
                   </p>
-                  <div className="mt-7 pt-6 border-t border-mist-300 flex items-center justify-between gap-6">
-                    {person.logos.map(logo => (
-                      <img
-                        key={logo.alt}
-                        src={logo.src}
-                        alt={logo.alt}
-                        className={`${logo.className} w-auto object-contain`}
-                      />
-                    ))}
+                  <div className="mt-7 pt-6 border-t border-mist-300">
+                    {person.logos ? (
+                      <div className="flex items-center justify-between gap-6">
+                        {person.logos.map(logo => (
+                          <img
+                            key={logo.alt}
+                            src={logo.src}
+                            alt={logo.alt}
+                            className={`${logo.className} w-auto object-contain`}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-3">
+                        {person.credentials.map(c => (
+                          <span
+                            key={c}
+                            className="bg-mist-200 text-navy-800 font-display font-semibold text-[11px] uppercase tracking-wider px-4 py-2"
+                          >
+                            {c}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
