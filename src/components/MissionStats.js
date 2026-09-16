@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
 const counters = [
-  { label: 'Properties Protected', target: 48, accent: 'from-blue-500 to-blue-300' },
-  { label: 'Incidents Prevented', target: 320, accent: 'from-purple-500 to-pink-400' },
-  { label: 'Guard Events Logged', target: 12840, accent: 'from-teal-400 to-cyan-300' }
+  { label: 'Properties Protected', target: 48, suffix: '' },
+  { label: 'Incidents Prevented', target: 320, suffix: '+' },
+  { label: 'Patrol Events Logged', target: 12840, suffix: '' },
+  { label: 'Years Of Industry Experience', target: 10, suffix: '+' }
 ];
 
 // Custom hook for count-up animation
@@ -24,25 +25,37 @@ const useCountUp = (end, duration = 1600) => {
 };
 
 // Child component so hooks aren't invoked inside a loop in parent
-const StatsCard = ({ label, target, accent }) => {
+const StatsCard = ({ label, target, suffix, index }) => {
   const value = useCountUp(target);
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gray-800/70 backdrop-blur border border-gray-700/50 p-6 flex flex-col gap-2 shadow-lg">
-      <div className={`absolute inset-0 opacity-30 bg-gradient-to-br ${accent}`}></div>
-      <div className="relative">
-        <p className="text-3xl md:text-4xl font-bold tracking-tight tabular-nums bg-gradient-to-r from-white to-gray-300 text-transparent bg-clip-text">{value.toLocaleString()}</p>
-        <p className="text-xs uppercase tracking-wide text-gray-400 mt-1">{label}</p>
-      </div>
+    <div
+      className={`px-6 py-10 lg:py-14 text-center lg:text-left border-white/15 ${
+        index % 2 === 1 ? 'border-l' : ''
+      } ${index < 2 ? 'border-b lg:border-b-0' : ''} ${
+        index > 0 ? 'lg:border-l' : 'lg:border-l-0'
+      }`}
+    >
+      <p className="font-display font-extrabold text-4xl lg:text-5xl tracking-tight tabular-nums text-white">
+        {value.toLocaleString()}
+        <span className="text-brand-200">{suffix}</span>
+      </p>
+      <p className="mt-3 font-display text-[11px] font-bold uppercase tracking-eyebrow text-brand-200">
+        {label}
+      </p>
     </div>
   );
 };
 
 const MissionStats = () => (
-  <div className="grid md:grid-cols-3 gap-6 mb-14">
-    {counters.map(c => (
-      <StatsCard key={c.label} {...c} />
-    ))}
-  </div>
+  <section className="bg-navy-800" aria-label="SecureAI by the numbers">
+    <div className="mx-auto max-w-7xl px-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4">
+        {counters.map((c, i) => (
+          <StatsCard key={c.label} {...c} index={i} />
+        ))}
+      </div>
+    </div>
+  </section>
 );
 
 export default MissionStats;

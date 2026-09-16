@@ -1,141 +1,170 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import GoogleReviews from './GoogleReviews';
 import ServiceCard from './ServiceCard';
 import ContactForm from './ContactForm';
 import FloatingReviews from './FloatingReviews';
 import ImpactFlowChart from './ImpactFlowChart';
 import MissionStats from './MissionStats';
+import CriticalGapSection from './CriticalGapSection';
+import Header from './Header';
+import Footer from './Footer';
+import { SERVICES } from './servicesData';
+
+const pillars = [
+  {
+    title: 'Trained Professionals',
+    copy:
+      'Officers are vetted, state-licensed and trained on your property before their first shift — not sent in cold.',
+    target: 'about',
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.6}
+        d="M12 3l7.5 3v5.25c0 4.5-3.15 8.4-7.5 9.75-4.35-1.35-7.5-5.25-7.5-9.75V6L12 3z"
+      />
+    )
+  },
+  {
+    title: 'Local Execution',
+    copy:
+      'Supervisors live and work in the markets they cover, so escalation is a phone call away — never a national queue.',
+    target: 'industries',
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.6}
+        d="M12 21s7-6.1 7-11a7 7 0 10-14 0c0 4.9 7 11 7 11zm0-8.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"
+      />
+    )
+  },
+  {
+    title: 'Verified Accountability',
+    copy:
+      'Time-stamped, location-verified patrol records give you proof of coverage for every hour you are billed.',
+    target: 'approach',
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.6}
+        d="M9 12.75l2.25 2.25L15.75 9M7.5 4.5h9a2.25 2.25 0 012.25 2.25v12.75l-3-2.25-3 2.25-3-2.25-3 2.25V6.75A2.25 2.25 0 017.5 4.5z"
+      />
+    )
+  }
+];
+
+const industries = [
+  {
+    name: 'Commercial & Office',
+    copy: 'Lobby posts, badge control and after-hours coverage for business parks and office towers.'
+  },
+  {
+    name: 'Residential & HOA',
+    copy: 'Apartment communities, gated neighborhoods and property-management portfolios.'
+  },
+  {
+    name: 'Retail & Shopping Centers',
+    copy: 'Loss-prevention presence, opening and closing coverage, parking-lot patrol.'
+  },
+  {
+    name: 'Construction & Industrial',
+    copy: 'Equipment and material protection, gate control, firewatch during active work.'
+  },
+  {
+    name: 'Events & Venues',
+    copy: 'Stadium, festival and private-event staffing with crowd and access management.'
+  },
+  {
+    name: 'Healthcare & Education',
+    copy: 'Calm, de-escalation-trained officers for clinics, campuses and student housing.'
+  }
+];
+
+const expertise = [
+  {
+    eyebrow: 'On the Ground',
+    title: 'A Presence That Deters, Not Just Reacts',
+    copy:
+      'Visible, professional officers change behavior before an incident starts. Posts are briefed on your property, your people and your escalation rules, and supervisors verify coverage in person — not from a spreadsheet three states away.',
+    image: '/secure1.jpeg',
+    alt: 'SecureAI security officer on radio during a night shift at an industrial site',
+    link: { label: 'Explore security officers', path: '/services/business' }
+  },
+  {
+    eyebrow: 'Coverage You Can Confirm',
+    title: 'Every Patrol Documented and Time-Stamped',
+    copy:
+      'Officers check in at defined points throughout each shift. You receive nightly reports with times, locations and photos, so questions about whether the property was covered are answered by the record rather than by argument.',
+    image: '/secure9.png',
+    alt: 'SecureAI reporting dashboard showing shift schedules and incident logging',
+    contain: true,
+    link: { label: 'Explore reporting and oversight', path: '/services/additional' }
+  },
+  {
+    eyebrow: 'Built For Scale',
+    title: 'One Team Across Every Property You Own',
+    copy:
+      'Whether it is a single building or a portfolio spread across a metro area, patrol routes, staffing levels and reporting stay consistent — and patterns spotted at one site inform how we protect the next.',
+    image: '/secure4.jpeg',
+    alt: 'SecureAI marked patrol vehicle with an officer beginning a mobile patrol route',
+    link: { label: 'Explore mobile patrol', path: '/services/mobile-patrol' }
+  }
+];
+
+const leadership = [
+  {
+    name: 'Dagmawi Bekele',
+    role: 'Founder & Chief Executive Officer',
+    photo: '/dagmawi-bekele.jpg',
+    bio:
+      'Dagmawi has spent more than a decade in the private security industry, including corporate experience at Allied Universal, where he worked across staffing, operations and client accounts at national scale. He founded SecureAI to bring that operational discipline to property owners who were tired of guards who could not be accounted for, and he still personally reviews the accounts the company takes on.',
+    credentials: ['10+ years in private security', 'Allied Universal corporate background'],
+    linkedin: null
+  },
+  {
+    name: 'Bereket Kibret',
+    role: 'Head of Technology',
+    initials: 'BK',
+    bio:
+      'A University of Southern California graduate with three years of field security experience before moving into software engineering at Microsoft. He builds the reporting and verification tools our officers use in the field, keeping them fast enough to actually get used on a shift.',
+    credentials: ['USC graduate', 'Software engineer at Microsoft'],
+    logos: [
+      { src: '/microsoft-logo.png', alt: 'Microsoft', className: 'h-9' },
+      { src: '/usc-logo.png', alt: 'University of Southern California', className: 'h-6' }
+    ],
+    linkedin: 'https://www.linkedin.com/in/bereketkibret'
+  },
+  {
+    name: 'Maher Dedgeba',
+    role: 'Operations & Analytics',
+    initials: 'MD',
+    bio:
+      'A San Jose State graduate and former security operations manager of five years, now a data analyst at Target headquarters. He turns shift and incident data into staffing and patrol decisions, which is how coverage gets tightened before a problem repeats.',
+    credentials: ['5 years security operations management', 'Data analyst at Target HQ'],
+    logos: [
+      { src: '/target-logo.png', alt: 'Target', className: 'h-9' },
+      { src: '/sjsu-logo.png', alt: 'San Jose State University', className: 'h-9' }
+    ],
+    linkedin: 'https://www.linkedin.com/in/maher-dedgeba-18893a2bb/'
+  }
+];
+
+const LinkedInIcon = ({ className = 'w-5 h-5' }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+  </svg>
+);
 
 const MainPage = () => {
-  const [activeTab, setActiveTab] = useState('home');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const homeRef = useRef(null);
-  const servicesRef = useRef(null);
-  const aboutRef = useRef(null);
-  const contactRef = useRef(null);
-  const reviewsRef = useRef(null);
-  const missionRef = useRef(null);
+  const navigate = useNavigate();
 
-  const scrollToSection = (ref, tabName) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' });
-    setActiveTab(tabName);
+  const scrollTo = id => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-  const services = [
-    {
-      title: "Firewatch",
-      description: "Comprehensive fire monitoring and prevention services to keep your property safe.",
-      path: "/services/firewatch",
-      icon: <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-7 text-white"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-        />
-      </svg>
-    },
-    {
-      title: "Business Security",
-      description: "Enterprise-grade solutions designed to protect your business assets seamlessly.",
-      path: "/services/business",
-      icon: <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-7 text-white"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-        />
-      </svg>
-    },
-    {
-      title: "Mobile Patrol",
-      description: "On-the-go security services to ensure safety and surveillance across various locations.",
-      path: "/services/mobile-patrol",
-      icon: <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-7 text-white"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    },
-    {
-      title: "Apartment/Neighborhood Security",
-      description: "Tailored security solutions for residential communities and apartment complexes.",
-      path: "/services/neighborhood",
-      icon: <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-7 text-white"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-        />
-      </svg>
-    },
-    {
-      title: "Event Security",
-      description: "Professional security services for events, ensuring safety and smooth operations.",
-      path: "/services/event",
-      icon: <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-7 text-white"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-        />
-      </svg>
-    },
-    {
-      title: "SecureAI Platform",
-      description: "Revolutionary security management software for complete control and visibility of your security operations.",
-      path: "/services/additional",
-      icon: <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-7 text-white"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-        />
-      </svg>
-    }
-  ];
 
   // Scroll reveal effect for sections
   useEffect(() => {
@@ -143,504 +172,462 @@ const MainPage = () => {
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('reveal-visible'));
       return;
     }
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Navigation Banner */}
-      <nav className="fixed top-0 w-full bg-gray-900 shadow-lg z-50">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <img src="/logo.PNG" alt="SecureAI Logo" className="h-10 w-auto" />
-              <span className="ml-2 text-xl font-bold">SECUREAI</span>
-            </div>
-            
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-gray-300 hover:text-white"
-              >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  {isMenuOpen ? (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  ) : (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  )}
-                </svg>
-              </button>
-            </div>
+    <div className="min-h-screen bg-white text-navy-900">
+      <Header />
 
-            {/* Desktop navigation */}
-            <div className="hidden md:flex space-x-8">
-              <button 
-                onClick={() => scrollToSection(homeRef, 'home')}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  activeTab === 'home' ? 'text-blue-500' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                Home
-              </button>
-              <button 
-                onClick={() => scrollToSection(servicesRef, 'services')}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  activeTab === 'services' ? 'text-blue-500' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                Services
-              </button>
-              <button 
-                onClick={() => scrollToSection(reviewsRef, 'reviews')}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  activeTab === 'reviews' ? 'text-blue-500' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                Reviews
-              </button>
-              <button 
-                onClick={() => scrollToSection(aboutRef, 'about')}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  activeTab === 'about' ? 'text-blue-500' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                About Us
-              </button>
-              <button 
-                onClick={() => scrollToSection(contactRef, 'contact')}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  activeTab === 'contact' ? 'text-blue-500' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                Contact Us
-              </button>
-              <button 
-                onClick={() => scrollToSection(missionRef, 'mission')}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  activeTab === 'mission' ? 'text-blue-500' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                Our Mission
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile navigation menu */}
-          {isMenuOpen && (
-            <div className="md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-900">
-                <button
-                  onClick={() => {
-                    scrollToSection(homeRef, 'home');
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md"
-                >
-                  Home
-                </button>
-                <button
-                  onClick={() => {
-                    scrollToSection(servicesRef, 'services');
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md"
-                >
-                  Services
-                </button>
-                <button
-                  onClick={() => {
-                    scrollToSection(reviewsRef, 'reviews');
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md"
-                >
-                  Reviews
-                </button>
-                <button
-                  onClick={() => {
-                    scrollToSection(aboutRef, 'about');
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md"
-                >
-                  About Us
-                </button>
-                <button
-                  onClick={() => {
-                    scrollToSection(contactRef, 'contact');
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md"
-                >
-                  Contact Us
-                </button>
-                <button
-                  onClick={() => {
-                    scrollToSection(missionRef, 'mission');
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md"
-                >
-                  Our Mission
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
-
-      <div className="pt-16">
-        {/* Hero Section (restored simpler version) */}
-        <section ref={homeRef} className="relative w-full h-screen flex items-center justify-center text-center px-6">
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-black" />
-          <div className="relative z-10 max-w-4xl mx-auto">
+      <main className="pt-[72px] md:pt-[108px]">
+        {/* ---------------------------------------------------------------- Hero */}
+        <section id="home" className="relative overflow-hidden bg-navy-900">
+          <div className="absolute inset-0">
             <img
-              src="/logo.PNG"
-              alt="SecureAI Logo"
-              className="mx-auto mb-6 w-44 md:w-72 lg:w-80"
+              src="/secure12.jpeg"
+              alt="SecureAI security officer patrolling a residential property"
+              className="hero-media w-full h-full object-cover object-center"
             />
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">
-              SECUREAI
-            </h1>
-            <p className="text-lg md:text-2xl mb-10 text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Intelligent protection for what matters most, designed with you in mind!
-            </p>
-            <div className="flex flex-wrap justify-center gap-6">
-              <button
-                onClick={() => scrollToSection(servicesRef, 'services')}
-                className="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50"
-              >
-                Get Started
-              </button>
-              <button
-                onClick={() => scrollToSection(contactRef, 'contact')}
-                className="bg-transparent hover:bg-blue-600/10 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 border-2 border-blue-600 hover:border-blue-500"
-              >
-                Contact Us
-              </button>
-              <button
-                onClick={() => scrollToSection(reviewsRef, 'reviews')}
-                className="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50 glow-border animate-hero-pulse"
-              >
-                <span className="inline-flex items-center gap-2">
-                  <svg className="w-5 h-5 text-yellow-300 animate-star-glow" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 01.894.553l1.382 2.8 3.09.45a1 1 0 01.554 1.707l-2.236 2.18.528 3.08a1 1 0 01-1.45 1.054L10 12.347l-2.768 1.457a1 1 0 01-1.45-1.054l.528-3.08-2.236-2.18a1 1 0 01.554-1.707l3.09-.45L9.106 2.553A1 1 0 0110 2z" /></svg>
-                  Our Reviews
-                </span>
-              </button>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/85 to-navy-900/35" />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 via-transparent to-navy-900/40" />
           </div>
-        </section>
 
-        {/* Original Critical Gap in Traditional Security Section (restored) */}
-        <section className="py-24 bg-gradient-to-b from-black via-gray-900 to-black reveal" id="critical-gap">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold mb-6 text-red-500">The Critical Gap in Traditional Security</h2>
-                <p className="text-xl text-gray-300 mb-8">Most security companies operate in the dark, leaving you exposed to unnecessary risks.</p>
-              </div>
-              <div className="grid md:grid-cols-2 gap-12 mb-20">
-                <div className="bg-gray-800/50 p-8 rounded-xl backdrop-blur">
-                  <h3 className="text-2xl font-semibold mb-4 text-white">The Real Problem</h3>
-                  <ul className="space-y-4">
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-red-500 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                      <span className="text-gray-300">No system to verify if guards are on-site or performing their duties</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-red-500 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                      <span className="text-gray-300">Guards disappearing for hours during shifts—unnoticed until incidents occur</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-red-500 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                      <span className="text-gray-300">Billions lost annually in damages, theft, and legal liability</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="bg-blue-900/50 p-8 rounded-xl backdrop-blur">
-                  <h3 className="text-2xl font-semibold mb-4 text-white">The SecureAI Solution</h3>
-                  <ul className="space-y-4">
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-blue-400 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <div>
-                        <span className="text-blue-400 font-semibold">Live Activity Tracking</span>
-                        <p className="text-gray-300">Real-time monitoring of guard locations, activities, and checkpoint compliance</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-blue-400 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <div>
-                        <span className="text-blue-400 font-semibold">Transparent Guard Logs</span>
-                        <p className="text-gray-300">Time-stamped, verified records of all security activities</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-blue-400 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <div>
-                        <span className="text-blue-400 font-semibold">Instant Alert System</span>
-                        <p className="text-gray-300">Immediate notifications for any security protocol breaches</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-semibold text-white mb-8">Because security without accountability isn't security at all.</p>
+          <div className="relative mx-auto max-w-7xl px-6 pt-24 pb-28 md:pt-32 md:pb-36">
+            <div className="max-w-2xl text-white">
+              <p className="eyebrow text-brand-200">Private Security Services</p>
+              <h1 className="mt-6 font-display font-extrabold leading-[1.05] tracking-tight text-4xl sm:text-5xl lg:text-[3.5rem]">
+                Security Officers and Patrol
+                <span className="block mt-3 text-brand-200 text-2xl sm:text-3xl lg:text-4xl font-bold">
+                  Local Execution | Verified Accountability
+                </span>
+              </h1>
+              <p className="mt-7 text-base md:text-lg leading-relaxed text-white/85 max-w-xl">
+                Trained, licensed officers protecting commercial, residential,
+                industrial and event properties across the West Coast — with
+                time-stamped patrol records you can check at any hour of the night.
+              </p>
+              <div className="mt-10 flex flex-wrap gap-4">
                 <button
-                  onClick={() => scrollToSection(contactRef, 'contact')}
-                  className="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50"
+                  onClick={() => scrollTo('contact')}
+                  className="bg-brand-600 hover:bg-brand-500 text-white font-display font-bold text-xs uppercase tracking-wider px-9 py-4 transition-colors"
                 >
-                  Secure Your Business Now
+                  Request a Quote
+                </button>
+                <button
+                  onClick={() => scrollTo('services')}
+                  className="border-2 border-white/70 hover:bg-white hover:text-navy-900 text-white font-display font-bold text-xs uppercase tracking-wider px-9 py-4 transition-colors"
+                >
+                  Explore Services
                 </button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Impact Growth Flow Chart */}
-        <ImpactFlowChart />
-
-        {/* Services Section */}
-        <section ref={servicesRef} className="py-24 bg-black reveal">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-semibold text-center mb-16">Our Services</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {services.map((service, index) => (
-                <ServiceCard key={index} {...service} />
+        {/* ------------------------------------------------------------ Pillars */}
+        <section className="bg-mist border-b border-mist-300">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-mist-300">
+              {pillars.map(p => (
+                <div key={p.title} className="py-12 md:px-10 first:md:pl-0 last:md:pr-0">
+                  <svg
+                    className="w-10 h-10 text-brand-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    {p.icon}
+                  </svg>
+                  <h2 className="mt-5 font-display font-bold text-xl text-navy-800">{p.title}</h2>
+                  <p className="mt-3 text-sm leading-relaxed text-slateink">{p.copy}</p>
+                  <button
+                    onClick={() => scrollTo(p.target)}
+                    className="arrow-link mt-5 inline-flex items-center gap-2 font-display text-[12px] font-bold uppercase tracking-wider text-brand-600 hover:text-navy-800 transition-colors"
+                  >
+                    Learn More
+                    <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path
+                        fillRule="evenodd"
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* About Us Section */}
-  <section ref={aboutRef} className="py-24 bg-gray-900 reveal">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-semibold text-center mb-16">About Us</h2>
-            <div className="max-w-4xl mx-auto">
-              <p className="text-gray-300 text-lg mb-12 leading-relaxed">
-                SecureAI was founded by two security professionals who saw gaps in the industry and set out to redefine private security. With years of hands-on experience, they combined their expertise in AI technology, data analysis, and security operations to create a smarter, more reliable solution.
+        {/* ----------------------------------------------------------- Services */}
+        <section id="services" className="py-24 bg-white reveal">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="max-w-3xl">
+              <p className="eyebrow text-brand-600">What We Do</p>
+              <h2 className="mt-5 font-display font-extrabold text-3xl md:text-[2.5rem] leading-tight tracking-tight rule-accent">
+                Scalable, End-to-End Security Solutions
+              </h2>
+              <p className="mt-7 text-base leading-relaxed text-slateink">
+                Staff a single post or cover an entire portfolio. Every service
+                below is delivered by our own licensed officers and reported
+                through one system, so standards do not change from site to site.
               </p>
+            </div>
 
-              <div className="grid md:grid-cols-3 gap-8 mb-12">
-                <div className="bg-gray-800 p-8 rounded-xl flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold text-white">Bereket Kibret</h3>
-                    <a 
-                      href="https://www.linkedin.com/in/bereketkibret" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300"
-                    >
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                      </svg>
-                    </a>
-                  </div>
-                  <p className="text-gray-300 font-medium">Microsoft Software Engineer</p>
-                  <p className="text-gray-400 mt-4 leading-relaxed flex-grow">
-                    A graduate of the University of Southern California with three years of hands-on security experience. Currently at Microsoft as a software engineer, he combines his security operations background with technical expertise to develop innovative security solutions. His dual experience helps bridge the gap between practical security needs and technological advancement.
-                  </p>
-                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-700">
-                    <img src="/microsoft-logo.png" alt="Microsoft" className="h-11" />
-                    <img src="/usc-logo.png" alt="USC" className="h-8" />
-                  </div>
-                </div>
-
-                <div className="bg-gray-800 p-8 rounded-xl flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold text-white">Samuel Tigistu</h3>
-                    <a 
-                      href="https://www.linkedin.com/in/samuel-tigistu-3060971a3/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300"
-                    >
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                      </svg>
-                    </a>
-                  </div>
-                  <p className="text-gray-300 font-medium">Microsoft Software Engineer</p>
-                  <p className="text-gray-400 mt-4 leading-relaxed flex-grow">
-                    A Yale University graduate specializing in security system architecture. At Microsoft, he leads the development of enterprise security solutions, bringing technical innovation to our platform. His expertise in both software engineering and security infrastructure helps strengthen our AI-powered security systems.
-                  </p>
-                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-700">
-                    <img src="/microsoft-logo.png" alt="Microsoft" className="h-12" />
-                    <img src="/yale-logo.png" alt="Yale" className="h-14" />
-                  </div>
-                </div>
-
-                <div className="bg-gray-800 p-8 rounded-xl flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold text-white">Maher Dedgeba</h3>
-                    <a 
-                      href="https://www.linkedin.com/in/maher-dedgeba-18893a2bb/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300"
-                    >
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                      </svg>
-                    </a>
-                  </div>
-                  <p className="text-gray-300">Target HQ Data Analyst</p>
-                  <p className="text-gray-400 mt-4 leading-relaxed flex-grow">
-                    A San Jose State graduate with extensive experience in security operations. Having served as a Securities Operational Manager for 5 years, he brings valuable insights to our data analytics and operational efficiency. His combination of hands-on security management experience and data analysis skills helps ensure seamless operations and data-driven solutions for our clients.
-                  </p>
-                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-700">
-                    <img src="/target-logo.png" alt="Target" className="h-12" />
-                    <img src="/sjsu-logo.png" alt="San Jose State University" className="h-12" />
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-gray-300 text-lg leading-relaxed">
-                By merging technology with in-person security, SecureAI is setting a new standard in safety and transparency—because security should evolve with the world around it. Our platform provides real-time monitoring, enhanced accountability, and faster response times, delivering a comprehensive security solution for the modern era.
-              </p>
+            <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {SERVICES.map(service => (
+                <ServiceCard key={service.path} {...service} />
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Reviews Section */}
-        <div ref={reviewsRef} className="reveal">
-          <GoogleReviews />
-        </div>
+        {/* -------------------------------------------------------------- Stats */}
+        <MissionStats />
 
-        {/* Contact Us Section */}
-  <section ref={contactRef} id="contact" className="py-24 bg-black reveal">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-semibold text-center mb-16">Contact Us</h2>
-            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-start">
-              <div className="space-y-6">
-                <div className="bg-gray-800/60 p-6 rounded-xl border border-gray-700">
-                  <h3 className="text-xl font-semibold mb-2">Fast Contact</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">Share a few details and our team will respond promptly—usually within the same business day.</p>
-                  <div className="mt-4 text-sm space-y-3">
-                    <div className="flex items-start gap-3">
-                      <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243" /></svg>
-                      <p className="text-gray-400">Address:<br /><span className="text-white">3031 Tisch Way, San Jose, CA 95128, United States</span></p>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 8h18" /></svg>
-                      <p className="text-gray-400">For general inquiries use the form. For urgent matters, start your message with "URGENT".</p>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.343-3 3v7h6v-7c0-1.657-1.343-3-3-3z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 21h14" /></svg>
-                      <p className="text-gray-400">All messages are monitored securely—your information is confidential.</p>
-                    </div>
+        {/* --------------------------------------------------------- Industries */}
+        <section id="industries" className="py-24 bg-mist reveal">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid lg:grid-cols-[1fr_1.15fr] gap-14 items-start">
+              <div className="lg:sticky lg:top-32">
+                <p className="eyebrow text-brand-600">Industries</p>
+                <h2 className="mt-5 font-display font-extrabold text-3xl md:text-[2.5rem] leading-tight tracking-tight rule-accent">
+                  The Most Local Security Partner You Will Work With
+                </h2>
+                <p className="mt-7 text-base leading-relaxed text-slateink">
+                  We staff the properties around us, which means our supervisors
+                  know the neighborhoods, the response times and the people. That
+                  local footing is what makes the difference between a guard
+                  standing at a door and a security program that actually reduces
+                  incidents.
+                </p>
+                <button
+                  onClick={() => scrollTo('contact')}
+                  className="mt-9 inline-flex items-center bg-navy-800 hover:bg-brand-600 text-white font-display font-bold text-xs uppercase tracking-wider px-8 py-4 transition-colors"
+                >
+                  Talk To Our Team
+                </button>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-px bg-mist-300 border border-mist-300">
+                {industries.map(ind => (
+                  <div key={ind.name} className="bg-white p-8 lift hover:shadow-card">
+                    <h3 className="font-display font-bold text-base text-navy-800">{ind.name}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-slateink">{ind.copy}</p>
                   </div>
-                  <a href="#reviews" className="inline-block mt-6 text-blue-400 hover:text-blue-300 text-sm underline decoration-blue-600/40">See client feedback →</a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ----------------------------------------------------------- Approach */}
+        <section id="approach" className="py-24 bg-white reveal">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="max-w-3xl">
+              <p className="eyebrow text-brand-600">Our Approach</p>
+              <h2 className="mt-5 font-display font-extrabold text-3xl md:text-[2.5rem] leading-tight tracking-tight rule-accent">
+                Expertise That Makes a Difference
+              </h2>
+            </div>
+
+            <div className="mt-16 space-y-20">
+              {expertise.map((item, i) => (
+                <div
+                  key={item.title}
+                  className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+                >
+                  <div className={i % 2 === 1 ? 'lg:order-2' : ''}>
+                    {item.contain ? (
+                      <div className="bg-mist-200 border border-mist-300 flex items-center justify-center p-8 h-[360px] lg:h-[460px]">
+                        <img
+                          src={item.image}
+                          alt={item.alt}
+                          className="max-h-full w-auto object-contain shadow-lift"
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <div className="absolute -bottom-4 -right-4 w-2/3 h-2/3 border-[10px] border-mist-200 -z-10 hidden lg:block" />
+                        <img
+                          src={item.image}
+                          alt={item.alt}
+                          className="w-full h-[320px] lg:h-[420px] object-cover object-center shadow-card"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className={i % 2 === 1 ? 'lg:order-1' : ''}>
+                    <p className="eyebrow text-brand-600">{item.eyebrow}</p>
+                    <h3 className="mt-5 font-display font-extrabold text-2xl md:text-3xl leading-tight tracking-tight text-navy-800">
+                      {item.title}
+                    </h3>
+                    <p className="mt-6 text-base leading-relaxed text-slateink">{item.copy}</p>
+                    <button
+                      onClick={() => navigate(item.link.path)}
+                      className="arrow-link mt-8 inline-flex items-center gap-2 font-display text-[12px] font-bold uppercase tracking-wider text-brand-600 hover:text-navy-800 transition-colors"
+                    >
+                      {item.link.label}
+                      <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                          fillRule="evenodd"
+                          d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-                <div className="bg-blue-900/40 p-6 rounded-xl border border-blue-800">
-                  <h3 className="text-lg font-semibold mb-2">Why choose SecureAI?</h3>
-                  <ul className="text-sm text-gray-300 space-y-2">
-                    <li className="flex items-start gap-2"><span className="text-blue-400">•</span> Real-time accountability</li>
-                    <li className="flex items-start gap-2"><span className="text-blue-400">•</span> Faster incident prevention</li>
-                    <li className="flex items-start gap-2"><span className="text-blue-400">•</span> Transparent reporting</li>
-                  </ul>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* -------------------------------------------- Accountability contrast */}
+        <CriticalGapSection />
+
+        {/* ------------------------------------------------------------- Growth */}
+        <ImpactFlowChart />
+
+        {/* --------------------------------------------------------- Leadership */}
+        <section id="about" className="py-24 bg-mist reveal">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="max-w-3xl">
+              <p className="eyebrow text-brand-600">About Us</p>
+              <h2 className="mt-5 font-display font-extrabold text-3xl md:text-[2.5rem] leading-tight tracking-tight rule-accent">
+                Built by People Who Have Worked the Post
+              </h2>
+              <p className="mt-7 text-base leading-relaxed text-slateink">
+                SecureAI was founded out of a decade of frontline and corporate
+                security experience. We saw the same failures repeat across the
+                industry — guards who could not be accounted for, reports written
+                after the fact, clients paying for coverage nobody could verify —
+                and built a company where the record is the product.
+              </p>
+            </div>
+
+            {/* Founder */}
+            <div className="mt-14 bg-white shadow-card border-t-4 border-brand-600">
+              <div className="grid md:grid-cols-[320px_1fr]">
+                <div className="relative bg-navy-900">
+                  <img
+                    src={leadership[0].photo}
+                    alt={`${leadership[0].name}, ${leadership[0].role} of SecureAI`}
+                    className="w-full h-full min-h-[340px] object-cover object-top"
+                  />
+                </div>
+                <div className="p-9 lg:p-12">
+                  <p className="eyebrow text-brand-600">Founder</p>
+                  <h3 className="mt-5 font-display font-extrabold text-2xl md:text-3xl tracking-tight text-navy-800">
+                    {leadership[0].name}
+                  </h3>
+                  <p className="mt-2 font-display font-semibold text-sm uppercase tracking-wider text-slateink-500">
+                    {leadership[0].role}
+                  </p>
+                  <p className="mt-6 text-base leading-relaxed text-slateink">
+                    {leadership[0].bio}
+                  </p>
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    {leadership[0].credentials.map(c => (
+                      <span
+                        key={c}
+                        className="bg-mist-200 text-navy-800 font-display font-semibold text-[11px] uppercase tracking-wider px-4 py-2"
+                      >
+                        {c}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="max-w-lg mx-auto w-full">
+            </div>
+
+            {/* Supporting leadership */}
+            <div className="mt-8 grid md:grid-cols-2 gap-8">
+              {leadership.slice(1).map(person => (
+                <div
+                  key={person.name}
+                  className="bg-white shadow-card p-9 flex flex-col lift hover:shadow-lift"
+                >
+                  <div className="flex items-start gap-5">
+                    <div className="w-16 h-16 shrink-0 bg-navy-800 text-white font-display font-bold text-lg flex items-center justify-center">
+                      {person.initials}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="font-display font-bold text-lg text-navy-800">
+                            {person.name}
+                          </h3>
+                          <p className="mt-1 font-display font-semibold text-[11px] uppercase tracking-wider text-slateink-500">
+                            {person.role}
+                          </p>
+                        </div>
+                        {person.linkedin && (
+                          <a
+                            href={person.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-slateink-500 hover:text-brand-600 transition-colors"
+                            aria-label={`${person.name} on LinkedIn`}
+                          >
+                            <LinkedInIcon />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="mt-6 text-sm leading-relaxed text-slateink flex-grow">
+                    {person.bio}
+                  </p>
+                  <div className="mt-7 pt-6 border-t border-mist-300 flex items-center justify-between gap-6">
+                    {person.logos.map(logo => (
+                      <img
+                        key={logo.alt}
+                        src={logo.src}
+                        alt={logo.alt}
+                        className={`${logo.className} w-auto object-contain`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-12 max-w-3xl text-base leading-relaxed text-slateink">
+              By pairing a professional on-site presence with straightforward
+              reporting, SecureAI holds itself to a standard the industry has been
+              slow to adopt: if it was not documented, it did not happen.
+            </p>
+          </div>
+        </section>
+
+        {/* ------------------------------------------------------------ Reviews */}
+        <GoogleReviews />
+
+        {/* ------------------------------------------------------------ Mission */}
+        <section id="mission" className="py-24 bg-white reveal">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid lg:grid-cols-[1fr_1fr] gap-14 items-center">
+              <div>
+                <p className="eyebrow text-brand-600">Our Mission</p>
+                <h2 className="mt-5 font-display font-extrabold text-3xl md:text-[2.5rem] leading-tight tracking-tight rule-accent">
+                  Let&apos;s Work Together to Secure the Promise of Tomorrow
+                </h2>
+                <p className="mt-7 text-base leading-relaxed text-slateink">
+                  Our mission is to raise the standard of private security by
+                  pairing a professional, well-trained presence with honest
+                  reporting. Protection should never be a black box — it should be
+                  something a property owner can see, check and trust.
+                </p>
+                <div className="mt-10 grid sm:grid-cols-2 gap-x-8 gap-y-6">
+                  {[
+                    { t: 'Accountability', d: 'Verified officer actions and location integrity on every shift.' },
+                    { t: 'Professionalism', d: 'Uniformed, vetted, de-escalation-trained officers.' },
+                    { t: 'Responsiveness', d: 'Local supervisors and a clear escalation path, day or night.' },
+                    { t: 'Transparency', d: 'A complete event trail available to you on request.' }
+                  ].map(v => (
+                    <div key={v.t} className="border-l-2 border-brand-600 pl-5">
+                      <h3 className="font-display font-bold text-base text-navy-800">{v.t}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-slateink">{v.d}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="relative">
+                <img
+                  src="/secure15.jpeg"
+                  alt="SecureAI officers managing entry at a large public event"
+                  className="w-full h-[380px] lg:h-[560px] object-cover object-center shadow-card"
+                />
+                <div className="absolute -bottom-6 -left-6 bg-navy-900 text-white p-8 max-w-xs hidden lg:block">
+                  <p className="font-display font-bold text-lg leading-snug">
+                    &ldquo;Security without accountability isn&apos;t security at all.&rdquo;
+                  </p>
+                  <p className="mt-3 text-xs uppercase tracking-eyebrow font-display font-semibold text-brand-200">
+                    Dagmawi Bekele, Founder
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ------------------------------------------------------------ Contact */}
+        <section id="contact" className="bg-navy-900 text-white">
+          <div className="mx-auto max-w-7xl px-6 py-24">
+            <div className="grid lg:grid-cols-2 gap-14">
+              <div>
+                <p className="eyebrow text-brand-200">Contact Us</p>
+                <h2 className="mt-5 font-display font-extrabold text-3xl md:text-[2.5rem] leading-tight tracking-tight">
+                  Request a Security Assessment
+                </h2>
+                <p className="mt-7 text-base leading-relaxed text-white/80 max-w-lg">
+                  Tell us about the property, the hours you need covered and what
+                  has not worked before. Our team reviews every request and
+                  responds — usually the same business day.
+                </p>
+
+                <div className="mt-10 space-y-6 max-w-lg">
+                  <div className="flex items-start gap-4 border-t border-white/15 pt-6">
+                    <svg className="w-5 h-5 text-brand-200 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M12 21s7-6.1 7-11a7 7 0 10-14 0c0 4.9 7 11 7 11zm0-8.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                    </svg>
+                    <div>
+                      <p className="font-display font-bold text-[11px] uppercase tracking-eyebrow text-brand-200">Office</p>
+                      <p className="mt-2 text-sm text-white/85">
+                        3031 Tisch Way, San Jose, CA 95128, United States
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4 border-t border-white/15 pt-6">
+                    <svg className="w-5 h-5 text-brand-200 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-display font-bold text-[11px] uppercase tracking-eyebrow text-brand-200">Urgent Coverage</p>
+                      <p className="mt-2 text-sm text-white/85">
+                        Begin your message with &ldquo;URGENT&rdquo; and it is routed
+                        straight to an operations supervisor.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4 border-t border-white/15 pt-6">
+                    <svg className="w-5 h-5 text-brand-200 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 10-8 0v4" />
+                    </svg>
+                    <div>
+                      <p className="font-display font-bold text-[11px] uppercase tracking-eyebrow text-brand-200">Confidential</p>
+                      <p className="mt-2 text-sm text-white/85">
+                        Property details you share stay between you and our
+                        operations team.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white text-navy-900 p-8 lg:p-10 shadow-lift">
                 <ContactForm />
               </div>
             </div>
           </div>
         </section>
+      </main>
 
-        {/* Mission Section - Enhanced */}
-        <section ref={missionRef} className="py-28 bg-gradient-to-b from-gray-900 via-black to-gray-900 reveal">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-10">
-              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Our Mission</h2>
-              <p className="text-gray-300 max-w-3xl mx-auto text-lg leading-relaxed">Elevating private security by fusing professional on-site presence with intelligent, adaptive technology—bringing accountability, foresight, and speed together.</p>
-            </div>
-            <MissionStats />
-            <div className="grid md:grid-cols-5 gap-6 mb-16">
-              {[
-                { title: 'Accountability', desc: 'Verified guard actions & location integrity.', icon: 'M5 13l4 4L19 7' },
-                { title: 'Intelligence', desc: 'Data-driven patterns & predictive insights.', icon: 'M12 8v4l3 3' },
-                { title: 'Speed', desc: 'Instant alerts & rapid escalation pipeline.', icon: 'M3 13h18' },
-                { title: 'Transparency', desc: 'Immutable event trail & live reporting.', icon: 'M5 17h14' },
-                { title: 'Reliability', desc: 'Layered tech + trained personnel synergy.', icon: 'M9 7h1m4 0h1' }
-              ].map(p => (
-                <div key={p.title} className="bg-gray-800/60 backdrop-blur rounded-2xl p-6 border border-gray-700/50 flex flex-col gap-3 hover:border-blue-600/50 transition">
-                  <div className="flex items-center gap-3">
-                    <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={p.icon} /></svg>
-                    <h3 className="text-lg font-semibold">{p.title}</h3>
-                  </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">{p.desc}</p>
-                </div>
-              ))}
-            </div>
-            <div className="grid md:grid-cols-3 gap-10 mb-20">
-              <div className="bg-blue-900/30 rounded-2xl border border-blue-700/50 p-8 flex flex-col gap-4">
-                <h3 className="text-xl font-semibold">Why It Matters</h3>
-                <p className="text-gray-300 text-sm leading-relaxed">Reactive security is costly. A proactive, instrumented layer reduces loss, liability, and downtime while increasing trust and retention.</p>
-              </div>
-              <div className="bg-purple-900/30 rounded-2xl border border-purple-700/50 p-8 flex flex-col gap-4">
-                <h3 className="text-xl font-semibold">How It Scales</h3>
-                <p className="text-gray-300 text-sm leading-relaxed">Insights compound across properties—pattern detection improves systemic coverage and informs staffing & patrol strategy.</p>
-              </div>
-              <div className="bg-pink-900/30 rounded-2xl border border-pink-700/50 p-8 flex flex-col gap-4">
-                <h3 className="text-xl font-semibold">Human + AI</h3>
-                <p className="text-gray-300 text-sm leading-relaxed">We enhance teams—not replace them—augmenting judgment with telemetry, context, and automated escalation.</p>
-              </div>
-            </div>
-            <div className="text-center">
-              <p className="text-xl text-gray-200 font-medium mb-6">Security shouldn’t be a black box—it should be a source of live truth.</p>
-              <button onClick={() => scrollToSection(contactRef, 'contact')} className="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-full text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50">
-                Start a SecureAI Assessment
-              </button>
-            </div>
-          </div>
-        </section>
-      </div>
-      {/* Floating Contact Button */}
-      <a
-        href="#contact"
-        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-full shadow-lg text-sm font-medium transition transform hover:scale-105"
-        aria-label="Quick contact shortcut"
-      >
-        Contact Us
-      </a>
+      <Footer />
       <FloatingReviews />
     </div>
   );

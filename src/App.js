@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
 import FirewatchDetails from './components/services/FirewatchDetails';
 import BusinessSecurityDetails from './components/services/BusinessSecurityDetails';
 import MobilePatrolDetails from './components/services/MobilePatrolDetails';
