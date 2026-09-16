@@ -1,145 +1,73 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import ServiceDetailsLayout from './ServiceDetailsLayout';
 
-const BusinessSecurityDetails = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  const benefits = [
-    {
-      title: "AI-Powered Protection",
-      description: "Advanced threat detection and monitoring using cutting-edge AI technology",
-      icon: "🤖"
-    },
-    {
-      title: "24/7 Surveillance",
-      description: "Round-the-clock monitoring and security patrols for continuous protection",
-      icon: "👁️"
-    },
-    {
-      title: "Access Control",
-      description: "Sophisticated access management systems for enhanced security",
-      icon: "🔐"
-    },
-    {
-      title: "Real-time Reporting",
-      description: "Comprehensive security reports and instant incident notifications",
-      icon: "📊"
-    }
-  ];
-
-  const services = [
-    "Corporate Office Security",
-    "Retail Store Protection",
-    "Warehouse Security",
-    "Industrial Facility Safeguarding",
-    "Access Control Management",
-    "Real-time Surveillance Monitoring",
-    "Routine Security Patrols",
-    "Emergency Response Protocols",
-    "Fire Watch Services",
-    "Asset Protection",
-    "Personnel Security",
-    "Threat Assessment & Prevention",
-    "Security System Integration",
-    "Custom Security Planning"
-  ];
-
-  return (
-    <div className="min-h-screen bg-black text-white pt-16">
-      <div className="container mx-auto px-4 py-12">
-        <button 
-          onClick={() => navigate('/')}
-          className="mb-8 flex items-center text-blue-500 hover:text-blue-400"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Home
-        </button>
-
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6">Business Security Services</h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Advanced AI-driven security solutions for businesses of all sizes
-          </p>
-        </div>
-
-        {/* Main Content */}
-        <div className="grid md:grid-cols-2 gap-12 mb-16">
-          <div>
-            <div className="bg-gray-900 p-8 rounded-xl h-full">
-              <h3 className="text-2xl font-semibold mb-6">Our Security Solutions</h3>
-              <div className="grid grid-cols-1 gap-4">
-                {services.map((service, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-300">{service}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <h2 className="text-3xl font-semibold mb-4">Comprehensive Business Protection</h2>
-            <p className="text-gray-300 leading-relaxed">
-              At SecureAI, we specialize in providing cutting-edge security solutions tailored to protect businesses of all sizes. Our AI-driven security approach, combined with highly trained security professionals, ensures round-the-clock protection for your property, assets, and personnel.
-            </p>
-            <div className="h-[500px] overflow-hidden rounded-lg shadow-xl">
-              <img 
-                src="/secure2.jpeg" 
-                alt="Business Security" 
-                className="w-full h-full object-cover object-center object-top"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Benefits Grid */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center">Our Approach</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="bg-gray-900 p-6 rounded-xl">
-                <div className="text-4xl mb-4">{benefit.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-                <p className="text-gray-400">{benefit.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-12">
-          <h2 className="text-3xl font-bold mb-4">Secure Your Business Today</h2>
-          <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Partner with SecureAI and experience a new standard in business security—where innovation meets reliability.
-          </p>
-          <button 
-            onClick={() => {
-              navigate('/');
-              setTimeout(() => {
-                const contactSection = document.getElementById('contact');
-                if (contactSection) {
-                  contactSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }, 100);
-            }} 
-            className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Get Started
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+const BusinessSecurityDetails = () => (
+  <ServiceDetailsLayout
+    path="/services/business"
+    title="Security Officers for Business & Commercial Property"
+    lede="Uniformed, state-licensed officers posted at your building — controlling access, deterring loss and handling incidents with the composure your tenants and employees expect."
+    heroImage="/secure2.jpeg"
+    heroAlt="SecureAI security officer standing post at a commercial property"
+    intro={{
+      heading: 'A Professional Presence, Not Just a Warm Body',
+      body: [
+        'An officer at the door changes how a property behaves. Ours arrive in full uniform, briefed on your site plan, your tenants and your escalation rules, and they are trained in de-escalation before they are trained in anything else. Posts can be armed or unarmed, staffed for business hours, overnight coverage or around the clock.',
+        'What separates this from a typical guard contract is what happens after the shift. Access events, patrol rounds and incidents are logged as they occur and delivered to you as a report — so a question about Tuesday at 2 a.m. has an answer rather than a shrug.'
+      ],
+      image: '/secure1.jpeg',
+      imageAlt: 'SecureAI officer coordinating by radio during an overnight commercial post'
+    }}
+    includes={{
+      heading: 'What a Commercial Post Covers',
+      items: [
+        'Corporate and multi-tenant office security',
+        'Retail and shopping-center coverage',
+        'Warehouse and distribution-center posts',
+        'Industrial facility safeguarding',
+        'Access control and visitor management',
+        'Lobby, reception and concierge posts',
+        'Interior and exterior foot patrol',
+        'Opening, closing and key control',
+        'Alarm and emergency response',
+        'Asset and equipment protection',
+        'Employee escort and termination standby',
+        'Written site-specific security planning'
+      ]
+    }}
+    approach={{
+      heading: 'How We Staff and Supervise Your Post',
+      items: [
+        {
+          title: 'Vetted & Licensed',
+          description:
+            'Background-checked, state-licensed officers, trained on your property before their first independent shift.',
+          icon: 'badge'
+        },
+        {
+          title: 'Access Control',
+          description:
+            'Visitor screening, credential checks and key management handled to a written procedure you approve.',
+          icon: 'lock'
+        },
+        {
+          title: 'Local Supervision',
+          description:
+            'Field supervisors conduct in-person post checks and are reachable directly — no national call queue.',
+          icon: 'phone'
+        },
+        {
+          title: 'Reported Coverage',
+          description:
+            'Patrols and incidents documented on shift, with a report in your inbox rather than a filing cabinet.',
+          icon: 'clipboard'
+        }
+      ]
+    }}
+    cta={{
+      heading: 'Secure your building with officers you can account for',
+      body: 'Send us the address, the hours you need staffed and any history with previous providers. We will put together a written coverage proposal.'
+    }}
+  />
+);
 
 export default BusinessSecurityDetails;

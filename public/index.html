@@ -3,16 +3,69 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#002B5C" />
     <meta
       name="description"
-      content="SecureAI - Advanced Security Solutions"
+      content="SecureAI Private Security Services - licensed security officers, mobile patrol, firewatch and event security for commercial, residential and event properties, backed by verified reporting."
     />
-    <title>SecureAI</title>
+    <title>SecureAI | Private Security Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              navy: {
+                DEFAULT: '#002B5C',
+                900: '#00193A',
+                800: '#002B5C',
+                700: '#083C77',
+                600: '#0F4C91'
+              },
+              brand: {
+                DEFAULT: '#0057B8',
+                600: '#0057B8',
+                500: '#1272D6',
+                400: '#4A90D9',
+                200: '#BBD4EE'
+              },
+              mist: {
+                DEFAULT: '#F4F7FA',
+                100: '#F9FBFD',
+                200: '#EDF2F7',
+                300: '#E1E8EF'
+              },
+              slateink: {
+                DEFAULT: '#3F5670',
+                600: '#4A6180',
+                500: '#647C99'
+              },
+              gold: '#B8862B'
+            },
+            fontFamily: {
+              display: ['Montserrat', 'Helvetica Neue', 'Arial', 'sans-serif'],
+              sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif']
+            },
+            letterSpacing: {
+              eyebrow: '0.18em'
+            },
+            boxShadow: {
+              card: '0 1px 2px rgba(0,43,92,0.06), 0 12px 32px -12px rgba(0,43,92,0.18)',
+              lift: '0 2px 4px rgba(0,43,92,0.08), 0 24px 48px -16px rgba(0,43,92,0.28)'
+            }
+          }
+        }
+      };
+    </script>
   </head>
-  <body class="bg-gray-900 text-white">
+  <body class="bg-white text-navy-900">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>

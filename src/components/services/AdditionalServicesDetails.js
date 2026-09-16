@@ -1,154 +1,74 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import ServiceDetailsLayout from './ServiceDetailsLayout';
 
-const AdditionalServicesDetails = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  const benefits = [
-    {
-      title: "Real-time Tracking",
-      description: "Monitor guard locations and receive instant alerts for out-of-zone activities",
-      icon: "📍"
-    },
-    {
-      title: "NFC Verification",
-      description: "Checkpoint scanning system for verifiable patrol logging",
-      icon: "✓"
-    },
-    {
-      title: "Team Management",
-      description: "Comprehensive CRM for scheduling and employee oversight",
-      icon: "👥"
-    },
-    {
-      title: "Custom Branding",
-      description: "White-label solution with your company's branding",
-      icon: "🎨"
-    }
-  ];
-
-  const features = [
-    "Real-time Guard Location Tracking",
-    "Automated Patrol Verification",
-    "Instant Alert System",
-    "NFC Checkpoint Scanning",
-    "Employee Scheduling",
-    "Incident Reporting & Tracking",
-    "Performance Analytics",
-    "Team Management Tools",
-    "Customizable Dashboards",
-    "White-label Branding Options",
-    "Mobile App Access",
-    "Automated Compliance Reports",
-    "Zone Management",
-    "Command Center Interface"
-  ];
-
-  return (
-    <div className="min-h-screen bg-black text-white pt-16">
-      <div className="container mx-auto px-4 py-12">
-        <button 
-          onClick={() => navigate('/')}
-          className="mb-8 flex items-center text-blue-500 hover:text-blue-400"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Home
-        </button>
-
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6">SecureAI Platform</h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Revolutionary security management software for complete control and visibility
-          </p>
-        </div>
-
-        {/* Main Content */}
-        <div className="grid md:grid-cols-2 gap-12 mb-16">
-          <div>
-            <div className="bg-gray-900 p-8 rounded-xl h-full">
-              <h3 className="text-2xl font-semibold mb-6">Platform Features</h3>
-              <div className="grid grid-cols-1 gap-4">
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <svg className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-300">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <h2 className="text-3xl font-semibold mb-4">Complete Control & Visibility</h2>
-            <p className="text-gray-300 leading-relaxed">
-              SecureAI revolutionizes security management by combining cutting-edge technology with real-world insights. Our platform provides total control over your security operations, ensuring every patrol is completed on time and your entire workforce is managed efficiently from one seamless interface.
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-lg shadow-xl bg-gray-900 p-2 h-[600px]">
-                <img 
-                  src="/secure10.png" 
-                  alt="SecureAI Platform Interface" 
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="rounded-lg shadow-xl bg-gray-900 p-2 h-[600px]">
-                <img 
-                  src="/secure9.png" 
-                  alt="SecureAI Platform Features" 
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Benefits Grid */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-semibold mb-8 text-center">Key Platform Benefits</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="bg-gray-900 p-6 rounded-xl">
-                <div className="text-4xl mb-4">{benefit.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-                <p className="text-gray-400">{benefit.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-12">
-          <h2 className="text-3xl font-bold mb-4">Transform Your Security Operations</h2>
-          <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Ready to take your security management to the next level? Contact us to learn more about the SecureAI platform.
-          </p>
-          <button 
-            onClick={() => {
-              navigate('/');
-              setTimeout(() => {
-                const contactSection = document.getElementById('contact');
-                if (contactSection) {
-                  contactSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }, 100);
-            }} 
-            className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Get Started
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+const AdditionalServicesDetails = () => (
+  <ServiceDetailsLayout
+    path="/services/additional"
+    title="Reporting & Account Oversight"
+    lede="Every patrol, checkpoint and incident recorded as it happens — so the coverage you are paying for is something you can see rather than something you have to trust."
+    heroImage="/secure1.jpeg"
+    heroAlt="SecureAI officer documenting a patrol round on site"
+    intro={{
+      heading: 'Coverage You Can Verify',
+      body: [
+        'The most common complaint about private security has nothing to do with the officers. It is that owners and managers have no way to confirm the guard was on site, walked the route or checked the doors. We built our reporting around that gap: officers scan physical checkpoints as they work, incidents are written up on shift with photos attached, and the record reaches you rather than sitting in a binder at a branch office.',
+        'The result is an account you can audit. Nightly activity summaries, checkpoint completion, response times and incident history are all available to your team — the same information our supervisors use to manage the post, shared with the person paying for it.'
+      ],
+      image: '/secure10.png',
+      imageAlt: 'SecureAI officer application showing checkpoint scanning and shift reporting',
+      imageContain: true
+    }}
+    includes={{
+      heading: 'What You Receive on Every Account',
+      items: [
+        'Nightly patrol and activity summaries',
+        'Checkpoint scan verification at each stop',
+        'On-shift officer location visibility',
+        'Out-of-zone and missed-round alerts',
+        'Written incident reports with photos',
+        'Time-stamped arrival and departure logs',
+        'Response-time tracking on call-outs',
+        'Post orders documented and version-controlled',
+        'Shift scheduling and coverage confirmation',
+        'Monthly account performance review',
+        'Board and insurer-ready report exports',
+        'Direct line to your field supervisor'
+      ]
+    }}
+    approach={{
+      heading: 'How Oversight Works',
+      items: [
+        {
+          title: 'Verified Checkpoints',
+          description:
+            'Officers scan checkpoints placed around the property, so a completed round is a record rather than a claim.',
+          icon: 'pin'
+        },
+        {
+          title: 'Reports on Shift',
+          description:
+            'Incidents are documented as they happen, with photos, times and locations — not reconstructed days later.',
+          icon: 'clipboard'
+        },
+        {
+          title: 'Supervisor Review',
+          description:
+            'Field supervisors review logs and conduct in-person post checks, correcting problems before you notice them.',
+          icon: 'badge'
+        },
+        {
+          title: 'Account Reviews',
+          description:
+            'A recurring review of coverage, incidents and trends, with adjustments to the post orders where the data calls for it.',
+          icon: 'chart'
+        }
+      ]
+    }}
+    cta={{
+      heading: 'See what your current coverage is actually delivering',
+      body: 'Tell us about your property and what your existing provider reports back to you. We will show you what the record looks like on a SecureAI account.'
+    }}
+  />
+);
 
 export default AdditionalServicesDetails;

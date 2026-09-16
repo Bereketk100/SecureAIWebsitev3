@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 
+const inputClasses =
+  'w-full px-4 py-3.5 bg-white border border-mist-300 text-navy-900 placeholder-slateink-500/70 text-sm focus:outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600 transition-colors';
+const labelClasses =
+  'block font-display text-[11px] font-bold uppercase tracking-eyebrow text-slateink-600 mb-2';
+
 const ContactForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -36,7 +41,7 @@ const ContactForm = () => {
 
     fetch("https://formcarry.com/s/6ke1FR2Sql5", {
       method: 'POST',
-      headers: { 
+      headers: {
         "Accept": "application/json",
         "Content-Type": "application/json"
       },
@@ -64,16 +69,21 @@ const ContactForm = () => {
 
   if (isSuccess) {
     return (
-      <div className="text-center p-8 bg-gray-900 rounded-lg" role="status" aria-live="polite">
-        <svg className="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-        </svg>
-        <h3 className="text-2xl font-semibold mb-4">Thank You!</h3>
-        <p className="text-gray-300 mb-6">Your message has been sent successfully. We'll get back to you soon.</p>
+      <div className="text-center py-6" role="status" aria-live="polite">
+        <div className="w-16 h-16 mx-auto bg-brand-600 flex items-center justify-center">
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="mt-6 font-display font-extrabold text-2xl text-navy-800">Request Received</h3>
+        <p className="mt-3 text-sm leading-relaxed text-slateink">
+          Thank you. Your message has reached our operations team and we will
+          follow up shortly — usually the same business day.
+        </p>
         <button
           type="button"
           onClick={() => { setIsSuccess(false); setError(''); }}
-          className="bg-blue-600 hover:bg-blue-500 py-3 px-8 rounded-lg text-white font-medium transition"
+          className="mt-8 bg-navy-800 hover:bg-brand-600 text-white font-display font-bold text-xs uppercase tracking-wider px-8 py-4 transition-colors"
         >
           Send Another Message
         </button>
@@ -82,17 +92,23 @@ const ContactForm = () => {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6" aria-describedby={error ? 'form-error' : undefined}>
-      <div className="bg-gray-800/60 p-4 rounded-lg text-sm text-gray-300">
-        Provide a few details and our team will reach out promptly. For urgent needs, submit the form and mark "URGENT" at the start of your message.
+    <form onSubmit={onSubmit} className="space-y-5" aria-describedby={error ? 'form-error' : undefined}>
+      <div>
+        <p className="eyebrow text-brand-600">Request a Quote</p>
+        <p className="mt-4 text-sm leading-relaxed text-slateink">
+          Share a few details about the property and the coverage you need. All
+          fields marked with an asterisk are required.
+        </p>
       </div>
+
       {error && (
-        <div id="form-error" className="bg-red-600 text-white p-4 rounded-lg mb-4" role="alert">
+        <div id="form-error" className="border-l-4 border-red-600 bg-red-50 text-red-800 px-4 py-3 text-sm" role="alert">
           {error}
         </div>
       )}
+
       <div>
-        <label htmlFor="name" className="block text-sm font-medium mb-2 text-gray-200">Full Name *</label>
+        <label htmlFor="name" className={labelClasses}>Full Name *</label>
         <input
           type="text"
           id="name"
@@ -100,52 +116,60 @@ const ContactForm = () => {
           onChange={(e) => setName(e.target.value)}
           placeholder="Jane Doe"
           required
-          className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:outline-none focus:border-blue-500 text-white"
+          className={inputClasses}
         />
       </div>
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-200">Email Address *</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          required
-          className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:outline-none focus:border-blue-500 text-white"
-        />
+      <div className="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label htmlFor="email" className={labelClasses}>Email Address *</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@company.com"
+            required
+            className={inputClasses}
+          />
+        </div>
+        <div>
+          <label htmlFor="phone" className={labelClasses}>Phone (optional)</label>
+          <input
+            type="tel"
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="(555) 555-5555"
+            className={inputClasses}
+          />
+        </div>
       </div>
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium mb-2 text-gray-200">Phone (optional)</label>
-        <input
-          type="tel"
-          id="phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="(555) 555-5555"
-          className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:outline-none focus:border-blue-500 text-white"
-        />
-      </div>
-      <div>
-        <label htmlFor="message" className="block text-sm font-medium mb-2 text-gray-200">Message *</label>
+        <label htmlFor="message" className={labelClasses}>How Can We Help? *</label>
         <textarea
           id="message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Tell us about your security needs, property type, and any challenges you're facing."
+          placeholder="Property type, address or area, hours you need covered, and anything that hasn't worked with previous providers."
           rows="5"
           required
-          className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:outline-none focus:border-blue-500 text-white resize-none"
+          className={`${inputClasses} resize-none`}
         ></textarea>
-        <p className="mt-2 text-xs text-gray-500">Min 10 characters. Include any timing constraints.</p>
+        <p className="mt-2 text-xs text-slateink-500">
+          Minimum 10 characters. Start with &ldquo;URGENT&rdquo; for same-day coverage needs.
+        </p>
       </div>
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-blue-600 hover:bg-blue-500 py-3 px-8 rounded-lg text-white font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-brand-600 hover:bg-navy-800 text-white font-display font-bold text-xs uppercase tracking-wider py-4 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {isSubmitting ? 'Sending...' : 'Send Message'}
+        {isSubmitting ? 'Sending…' : 'Send Request'}
       </button>
+      <p className="text-xs text-slateink-500 leading-relaxed">
+        Your information is used only to respond to this request and is never
+        shared with third parties.
+      </p>
     </form>
   );
 };
