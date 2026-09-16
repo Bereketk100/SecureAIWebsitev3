@@ -66,7 +66,7 @@ const Header = () => {
       <div className="hidden md:block bg-navy-900 text-white/80">
         <div className="mx-auto max-w-7xl px-6 h-9 flex items-center justify-between text-[11px] tracking-wide">
           <p className="uppercase tracking-eyebrow font-display font-semibold text-white/70">
-            Licensed &amp; Insured Private Security &middot; San Jose, California
+            Licensed &amp; Insured Private Security
           </p>
           <div className="flex items-center gap-6">
             <button
